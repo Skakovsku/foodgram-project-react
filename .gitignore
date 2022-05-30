@@ -97,3 +97,5 @@ dmypy.json
 .pyre/
 
 .idea
+
+request.http
