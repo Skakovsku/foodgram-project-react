@@ -8,8 +8,10 @@ class User(AbstractUser):
         ('user', 'user'),
         ('user_auth', 'user_auth')
     )
-    email = models.EmailField(unique=True, blank=False)
-    username = models.CharField(unique=True, max_length=100)
+    email = models.EmailField()
+    username = models.CharField(unique=True, max_length=150)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
     role = models.CharField(
         max_length=10,
         choices=USER_ROLES,
