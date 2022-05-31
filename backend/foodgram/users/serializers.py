@@ -6,6 +6,7 @@ from .models import User
 
 
 class EmailAuthTokenSerializer(serializers.Serializer):
+
     email = serializers.CharField(
         label=_("Email"),
         write_only=True
@@ -22,7 +23,6 @@ class EmailAuthTokenSerializer(serializers.Serializer):
     )
 
     def validate(self, attrs):
-        print(attrs)
         email = attrs.get('email')
         password = attrs.get('password')
 

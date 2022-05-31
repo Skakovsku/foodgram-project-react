@@ -9,5 +9,4 @@ router = DefaultRouter()
 
 urlpatterns = [
     path('auth/token/', include('users.urls')),
-    #path('auth/token/logout/', views.)
 ]
