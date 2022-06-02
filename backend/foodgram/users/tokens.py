@@ -13,7 +13,11 @@ from .serializers import EmailAuthTokenSerializer
 class EmailObtainAuthToken(APIView):
     throttle_classes = ()
     permission_classes = ()
-    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
+    parser_classes = (
+        parsers.FormParser,
+        parsers.MultiPartParser,
+        parsers.JSONParser,
+    )
     renderer_classes = (renderers.JSONRenderer,)
     serializer_class = EmailAuthTokenSerializer
 
@@ -58,7 +62,7 @@ class EmailObtainAuthToken(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
+        return Response({'token': token.key}, status.HTTP_201_CREATED)
 
 
 @api_view(('POST',))
