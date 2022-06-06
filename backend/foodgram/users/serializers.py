@@ -1,8 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
-
-from .models import User
+from .models import User, Subscription
 
 
 class EmailAuthTokenSerializer(serializers.Serializer):
@@ -51,3 +50,21 @@ class CurrentUserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         model = User
         fields = ('email', 'id', 'username', 'first_name', 'last_name',)
+
+
+class ListSubscriptionsSerializer(serializers.ModelSerializer):
+    recipes_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('email', 'id', 'username', 'first_name', 'last_name',
+                  'recipes', 'recipes_count',)
+
+    def get_recipes_count(self, obj):
+        return obj.recipes.count()
+
+
+class PostDelSubscribeSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model = Subscription
+        fields = ['id']
