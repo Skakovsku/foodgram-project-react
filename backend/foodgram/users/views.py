@@ -1,6 +1,7 @@
 from djoser.views import UserViewSet
-from rest_framework import exceptions
+from rest_framework import exceptions, status
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
 from users.models import User, Subscription
 from .serializers import (PostDelSubscribeSerialiser,
                           ListSubscriptionsSerializer)
@@ -77,4 +78,5 @@ class PostDelSubscribeViewSet(ModelViewSet):
             user=request.user,
             following=follow_list[0]
         )
-        return super(PostDelSubscribeViewSet, self).destroy(request, obj)
+        self.perform_destroy(obj)
+        return Response(status=status.HTTP_204_NO_CONTENT)
