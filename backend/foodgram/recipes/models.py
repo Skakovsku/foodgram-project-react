@@ -11,10 +11,19 @@ class Tag(models.Model):
     slug = models.SlugField(max_length=15, verbose_name='tags_slug')
 
 
-class Ingredient(models.Model):
+class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name='ingredients_name')
-    quantity = models.FloatField(verbose_name='quantity')
     measurement_unit = models.CharField(max_length=15, verbose_name='unit')
+
+
+class Ingredient(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='product',
+        verbose_name='product',
+    )
+    quantity = models.FloatField(verbose_name='quantity')
 
 
 class Recipe(models.Model):

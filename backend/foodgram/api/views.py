@@ -2,7 +2,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.permissions import AllowAny
 from rest_framework import exceptions
 from rest_framework.filters import SearchFilter
-from recipes.models import Ingredient, Tag
+from recipes.models import Product, Tag
 from .serializers import IngredientSerializer, TagSerializer
 
 
@@ -22,7 +22,7 @@ class TagViewSet(ReadOnlyModelViewSet):
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
-    queryset = Ingredient.objects.all()
+    queryset = Product.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
     permission_classes = (AllowAny,)
