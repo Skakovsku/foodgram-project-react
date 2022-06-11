@@ -26,5 +26,5 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
     pagination_class = None
     permission_classes = (AllowAny,)
-    filter_backends = (SearchFilter,)  # Если db='Postgrees', то нечувствителен к регистру
-    search_fields = ('^name',)
+    filter_backends = (SearchFilter,)  # Если db='Postgrees',
+    search_fields = ('^name',)         # то нечувствителен к регистру

@@ -23,7 +23,7 @@ class Ingredient(models.Model):
         related_name='product',
         verbose_name='product',
     )
-    quantity = models.FloatField(verbose_name='quantity')
+    amount = models.FloatField(verbose_name='amount')
 
 
 class Recipe(models.Model):
