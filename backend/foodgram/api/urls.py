@@ -1,12 +1,13 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from users.tokens import EmailObtainAuthToken, token_logout
-from .views import TagViewSet
+from .views import IngredientViewSet, TagViewSet
 
 app_name = 'api'
 
 router = DefaultRouter()
 router.register('tags', TagViewSet)
+router.register('ingredients', IngredientViewSet)
 
 urlpatterns = [
     path('auth/token/login/', EmailObtainAuthToken.as_view()),
