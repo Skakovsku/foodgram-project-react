@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'colorful',
+    'sorl.thumbnail',
     'users.apps.UsersConfig',
     'api.apps.ApiConfig',
     'core.apps.CoreConfig',
@@ -88,6 +89,9 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = 'users.User'
 

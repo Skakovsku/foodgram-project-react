@@ -47,9 +47,24 @@ class UserRegistrationSerializer(UserCreateSerializer):
 
 
 class CurrentUserSerializer(UserSerializer):
+    is_subscribed = serializers.SerializerMethodField()
+
     class Meta(UserSerializer.Meta):
         model = User
-        fields = ('email', 'id', 'username', 'first_name', 'last_name',)
+        fields = ('email', 'id', 'username', 'first_name', 'last_name',
+                  'is_subscribed',)
+
+    def get_is_subscribed(self, obj):
+        current_user = self.context['request'].user
+        if current_user.is_anonymous:
+            return False
+        follow = Subscription.objects.filter(
+            user=current_user,
+            following=obj
+        )
+        if len(follow) == 0:
+            return False
+        return True
 
 
 class ListSubscriptionsSerializer(serializers.ModelSerializer):

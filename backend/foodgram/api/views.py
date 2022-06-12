@@ -1,16 +1,14 @@
-from rest_framework.viewsets import ReadOnlyModelViewSet
-from rest_framework.permissions import AllowAny
-from rest_framework import exceptions
+from rest_framework import exceptions, viewsets, permissions
 from rest_framework.filters import SearchFilter
-from recipes.models import Product, Tag
-from .serializers import IngredientSerializer, TagSerializer
+from recipes.models import Ingredient, Product, Recipe, Tag
+from . import serializers
 
 
-class TagViewSet(ReadOnlyModelViewSet):
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
-    serializer_class = TagSerializer
+    serializer_class = serializers.TagSerializer
     pagination_class = None
-    permission_classes = (AllowAny,)
+    permission_classes = (permissions.AllowAny,)
 
     def retrieve(self, request, *args, **kwargs):
         obj = Tag.objects.filter(pk=kwargs['pk'])
@@ -21,10 +19,24 @@ class TagViewSet(ReadOnlyModelViewSet):
         return super().retrieve(request, *args, **kwargs)
 
 
-class IngredientViewSet(ReadOnlyModelViewSet):
+class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Product.objects.all()
-    serializer_class = IngredientSerializer
+    serializer_class = serializers.ProductSerializer
     pagination_class = None
-    permission_classes = (AllowAny,)
+    permission_classes = (permissions.AllowAny,)
     filter_backends = (SearchFilter,)  # Если db='Postgrees',
     search_fields = ('^name',)         # то нечувствителен к регистру
+
+
+class IngredientViewSet(viewsets.ModelViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class = serializers.IngredientSerializer
+
+
+class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    serializer_class = serializers.RecipeSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
