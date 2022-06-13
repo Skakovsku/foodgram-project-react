@@ -39,4 +39,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        list_ingredients = []
+        for ingredient in self.request.data['ingredients']:
+            current_ingredient = Ingredient.objects.create(
+                product=Product.objects.get(id=ingredient['id']),
+                amount=ingredient['amount']
+            )
+            list_ingredients.append(current_ingredient)
+        serializer.save(
+            author=self.request.user,
+            tags=self.request.data['tags'],
+            ingredients=list_ingredients
+        )

@@ -10,10 +10,16 @@ class Tag(models.Model):
     color = RGBColorField(max_length=8, verbose_name='tags_color')
     slug = models.SlugField(max_length=15, verbose_name='tags_slug')
 
+    class Meta:
+        ordering = ('-id',)
+
 
 class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name='ingredients_name')
     measurement_unit = models.CharField(max_length=15, verbose_name='unit')
+
+    class Meta:
+        ordering = ('-id',)
 
 
 class Ingredient(models.Model):
@@ -23,7 +29,10 @@ class Ingredient(models.Model):
         related_name='product',
         verbose_name='product',
     )
-    amount = models.FloatField(verbose_name='amount')
+    amount = models.IntegerField(verbose_name='amount')
+
+    class Meta:
+        ordering = ('-id',)
 
 
 class Recipe(models.Model):
@@ -50,6 +59,9 @@ class Recipe(models.Model):
         verbose_name='ingredient',
     )
 
+    class Meta:
+        ordering = ('-id',)
+
 
 class Favourites(models.Model):
     user = models.ForeignKey(
@@ -59,3 +71,6 @@ class Favourites(models.Model):
         verbose_name='favourites',
     )
     recipe = models.ManyToManyField(Recipe, verbose_name='users_recipe')
+
+    class Meta:
+        ordering = ('-id',)

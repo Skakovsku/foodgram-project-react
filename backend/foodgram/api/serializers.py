@@ -1,11 +1,7 @@
-import base64
-import six
-import uuid
-import imghdr
-from django.core.files.base import ContentFile
-from rest_framework.serializers import ModelSerializer, ImageField
-from rest_framework.relations import SlugRelatedField
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from recipes.models import Ingredient, Product, Recipe, Tag
+from users.serializers import CurrentUserSerializer
+from .fields import Base64ImageField
 
 
 class TagSerializer(ModelSerializer):
@@ -21,39 +17,36 @@ class ProductSerializer(ModelSerializer):
 
 
 class IngredientSerializer(ModelSerializer):
+    name = SerializerMethodField(read_only=True)
+    measurement_unit = SerializerMethodField(read_only=True)
+
     class Meta:
         model = Ingredient
-        fields = '__all__'
+        fields = ('id', 'name', 'measurement_unit', 'amount',)
 
+    def get_name(self, obj):
+        return obj.product.name
 
-class Base64ImageField(ImageField):
-
-    def to_internal_value(self, data):
-        if isinstance(data, six.string_types):
-            if 'data:' in data and ';base64,' in data:
-                header, data = data.split(';base64,')
-            try:
-                decoded_file = base64.b64decode(data)
-            except TypeError:
-                self.fail('invalid_image')
-            file_name = str(uuid.uuid4())[:12]
-            file_extension = self.get_file_extension(file_name, decoded_file)
-            complete_file_name = "%s.%s" % (file_name, file_extension, )
-            data = ContentFile(decoded_file, name=complete_file_name)
-        return super(Base64ImageField, self).to_internal_value(data)
-
-    def get_file_extension(self, file_name, decoded_file):
-        extension = imghdr.what(file_name, decoded_file)
-        extension = "jpg" if extension == "jpeg" else extension
-        return extension
+    def get_measurement_unit(self, obj):
+        return obj.product.measurement_unit
 
 
 class RecipeSerializer(ModelSerializer):
-    author = SlugRelatedField(slug_field='username', read_only=True)
+    tags = TagSerializer(read_only=True, many=True)
+    author = CurrentUserSerializer(read_only=True)
     ingredients = IngredientSerializer(read_only=True, many=True)
     image = Base64ImageField(max_length=None, use_url=True)
+    is_favorited = SerializerMethodField()
+    is_in_shopping_cart = SerializerMethodField()
 
     class Meta:
         model = Recipe
-        fields = ('id', 'tags', 'author', 'ingredients', 'name', 'image',
-                  'text', 'cooking_time',)
+        fields = ('id', 'tags', 'author', 'ingredients', 'is_favorited',
+                  'is_in_shopping_cart', 'name', 'image', 'text',
+                  'cooking_time',)
+
+    def get_is_favorited(self, obj):
+        pass
+
+    def get_is_in_shopping_cart(self, obj):
+        pass
