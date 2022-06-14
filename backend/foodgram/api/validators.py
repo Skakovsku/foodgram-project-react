@@ -29,7 +29,6 @@ def ingredient_validator(data):
 
 
 def tags_validator(data):
-    print(data)
     if 'tags' not in data:
         raise exceptions.ValidationError(
             {'tags': ["Обязательное поле."]}

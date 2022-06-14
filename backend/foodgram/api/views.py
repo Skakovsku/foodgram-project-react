@@ -47,10 +47,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         list_ingredients = []
         for ingredient in self.request.data['ingredients']:
-            current_ingredient = Ingredient.objects.create(
-                product=Product.objects.get(id=ingredient['id']),
+            product = Product.objects.get(id=ingredient['id'])
+            ingredient_request = Ingredient.objects.filter(
+                product=product,
                 amount=ingredient['amount']
             )
+            if ingredient_request.count() != 0:
+                current_ingredient = ingredient_request['0']
+            else:
+                current_ingredient = Ingredient.objects.create(
+                    product=product,
+                    amount=ingredient['amount']
+                )
             list_ingredients.append(current_ingredient)
         serializer.save(
             author=self.request.user,
@@ -78,4 +86,40 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return super().update(request, *args, **kwargs)
 
     def perform_update(self, serializer):
-        return super().perform_update(serializer)
+        if 'ingredients' in self.request.data:
+            list_ingredients = []
+            for ingredient in self.request.data['ingredients']:
+                new_obj = Ingredient.objects.filter(
+                    product=Product.objects.get(id=ingredient['id']),
+                    amount=ingredient['amount']
+                )
+                if new_obj.count() != 0:
+                    new_ingredient = new_obj[0]
+                else:
+                    new_ingredient = Ingredient.objects.create(
+                        product=Product.objects.get(id=ingredient['id']),
+                        amount=ingredient['amount']
+                    )
+                list_ingredients.append(new_ingredient)
+            serializer.save(ingredients=list_ingredients)
+        if 'tags' in self.request.data:
+            list_tags = []
+            for tag in self.request.data['tags']:
+                new_obj = Tag.objects.get(id=tag)
+                list_tags.append(new_obj)
+            serializer.save(tags=list_tags)
+
+    def destroy(self, request, *args, **kwargs):
+        perm_msg_1 = 'У вас недостаточно прав для выполнения '
+        perm_msg_2 = 'данного действия.'
+        perm_msg = perm_msg_1 + perm_msg_2
+        obj = Recipe.objects.filter(id=kwargs['pk'])
+        if obj.count() == 0:
+            raise exceptions.NotFound(
+                {"detail": "Страница не найдена."}
+            )
+        if obj[0].author != self.request.user:
+            raise exceptions.PermissionDenied(
+                {"detail": perm_msg}
+            )
+        return super().destroy(request, *args, **kwargs)
