@@ -1,6 +1,9 @@
+from curses.ascii import HT
 from rest_framework import exceptions, viewsets, permissions
 from rest_framework.filters import SearchFilter
-from recipes.models import Ingredient, Product, Recipe, Tag
+from rest_framework.decorators import action
+from django.http import HttpResponse
+from recipes.models import Ingredient, Product, Recipe, RecipeUsers, Tag
 from . import serializers, validators
 
 
@@ -123,3 +126,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 {"detail": perm_msg}
             )
         return super().destroy(request, *args, **kwargs)
+    
+    @action(methods=['post', 'delete'], detail=True,
+            url_path='shopping_cart', url_name='change_password')
+    def shopping_cart(self, request, pk):
+        print(request.method)
+        print(self, request, pk)
+
+    @action(methods=['post', 'delete'], detail=True)
+    def favorite(self, request, pk):
+        print(request.method)
+        print(self, request, pk)
+
+
+@action(methods=['get'], detail=True, url_path='download_shopping_cart')
+def download_shopping_cart(request):
+    print(request)
+    return HttpResponse()
