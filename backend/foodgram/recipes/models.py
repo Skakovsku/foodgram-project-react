@@ -63,14 +63,23 @@ class Recipe(models.Model):
         ordering = ('-id',)
 
 
-class Favourites(models.Model):
+class RecipeUsers(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='users_favoutites',
         verbose_name='favourites',
     )
-    recipe = models.ManyToManyField(Recipe, verbose_name='users_recipe')
+    users_favorite = models.ManyToManyField(
+        Recipe,
+        related_name='favorite',
+        verbose_name='users_favorite'
+    )
+    users_shopping = models.ManyToManyField(
+        Recipe,
+        related_name='shopping',
+        verbose_name='users_shopping'
+    )
 
     class Meta:
         ordering = ('-id',)

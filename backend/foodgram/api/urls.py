@@ -8,11 +8,17 @@ app_name = 'api'
 router = DefaultRouter()
 router.register('tags', TagViewSet)
 router.register('ingredients', ProductViewSet)
+#router.register(r'recipes/(?P<id>\d+)/shopping_cart', ShoppingCartViewSet),
 router.register('recipes', RecipeViewSet)
 
 urlpatterns = [
     path('auth/token/login/', EmailObtainAuthToken.as_view()),
     path('auth/token/logout/', token_logout, name='token_logout'),
+    #path(
+    #    'recipes/download_shopping_cart/',
+    #    download_shopping_cart,
+    #    name='download_shopping_cart'
+    #),
     path('users/', include('users.urls')),
     path('', include(router.urls)),
     path('', include('djoser.urls')),
