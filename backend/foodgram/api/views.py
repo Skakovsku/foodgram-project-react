@@ -1,8 +1,7 @@
-from curses.ascii import HT
-from rest_framework import exceptions, viewsets, permissions
+from rest_framework import exceptions, viewsets, permissions, status
 from rest_framework.filters import SearchFilter
-from rest_framework.decorators import action
-from django.http import HttpResponse
+from rest_framework.decorators import action, api_view
+from rest_framework.response import Response
 from recipes.models import Ingredient, Product, Recipe, RecipeUsers, Tag
 from . import serializers, validators
 
@@ -126,12 +125,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 {"detail": perm_msg}
             )
         return super().destroy(request, *args, **kwargs)
-    
+
     @action(methods=['post', 'delete'], detail=True,
-            url_path='shopping_cart', url_name='change_password')
+            url_path='shopping_cart')
     def shopping_cart(self, request, pk):
-        print(request.method)
-        print(self, request, pk)
+        if RecipeUsers.objects.filter(user=request.user).count() == 0:
+            RecipeUsers.objects.create(user=request.user)
+        data_obj = RecipeUsers.objects.get(user=request.user)
+        recipe = Recipe.objects.filter(id=pk)
+        if recipe.count() == 0:
+            raise exceptions.NotFound({"detail": "Страница не найдена."})
+        data_obj.users_shopping.add(recipe[0])
+        print('data_obj_2:', data_obj)
+        print(data_obj.users_shopping.all()[0].name)
+        return Response(status=status.HTTP_200_OK)
+        """if request.method == 'DELETE':
+            if data_queryset.shopping[pk]:
+				print('Проверка')
+			obj_del = data_queryset.shopping[pk] # ПРОВЕРИТЬ!!!
+			if obj_del == 
+        if request.method == 'POST':"""
 
     @action(methods=['post', 'delete'], detail=True)
     def favorite(self, request, pk):
@@ -139,7 +152,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         print(self, request, pk)
 
 
-@action(methods=['get'], detail=True, url_path='download_shopping_cart')
+@api_view()
 def download_shopping_cart(request):
     print(request)
-    return HttpResponse()
+    return Response({"message": "Hello, world!"})
