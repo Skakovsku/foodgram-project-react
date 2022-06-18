@@ -50,6 +50,7 @@ class Recipe(models.Model):
     text = models.TextField(verbose_name='description')
     cooking_time = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(limit_value=1)],
+        default=0,
         verbose_name='cooking_time',
     )
     image = models.ImageField(upload_to='recipes/')

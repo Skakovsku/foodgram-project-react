@@ -2,8 +2,9 @@ from rest_framework import exceptions, viewsets, permissions, status
 from rest_framework.filters import SearchFilter
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
-from recipes.models import Ingredient, Product, Recipe, RecipeUsers, Tag
+from recipes.models import Ingredient, Product, Recipe, Tag
 from . import serializers, validators
+from . import exceptions as exc
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -15,9 +16,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         obj = Tag.objects.filter(pk=kwargs['pk'])
         if len(obj) == 0:
-            raise exceptions.NotFound(
-                {'detail': 'Страница не найдена.'}
-            )
+            raise exc.NotFoundCastom
         return super().retrieve(request, *args, **kwargs)
 
 
@@ -117,9 +116,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         perm_msg = perm_msg_1 + perm_msg_2
         obj = Recipe.objects.filter(id=kwargs['pk'])
         if obj.count() == 0:
-            raise exceptions.NotFound(
-                {"detail": "Страница не найдена."}
-            )
+            raise exc.NotFoundCastom
         if obj[0].author != self.request.user:
             raise exceptions.PermissionDenied(
                 {"detail": perm_msg}
@@ -129,27 +126,58 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(methods=['post', 'delete'], detail=True,
             url_path='shopping_cart')
     def shopping_cart(self, request, pk):
-        if RecipeUsers.objects.filter(user=request.user).count() == 0:
-            RecipeUsers.objects.create(user=request.user)
-        data_obj = RecipeUsers.objects.get(user=request.user)
-        recipe = Recipe.objects.filter(id=pk)
-        if recipe.count() == 0:
-            raise exceptions.NotFound({"detail": "Страница не найдена."})
-        data_obj.users_shopping.add(recipe[0])
-        print('data_obj_2:', data_obj)
-        print(data_obj.users_shopping.all()[0].name)
-        return Response(status=status.HTTP_200_OK)
-        """if request.method == 'DELETE':
-            if data_queryset.shopping[pk]:
-				print('Проверка')
-			obj_del = data_queryset.shopping[pk] # ПРОВЕРИТЬ!!!
-			if obj_del == 
-        if request.method == 'POST':"""
+        data_obj, recipe = validators.recipe_users_validator(request, pk)
+        if request.method == 'DELETE':
+            if data_obj.users_shopping.filter(id=pk).count() == 0:
+                raise exceptions.ValidationError(
+                    {"error": "Запрошенного рецепта нет в списке."}
+                )
+            data_obj.users_shopping.remove(recipe)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        if request.method == 'POST':
+            if data_obj.users_shopping.filter(id=pk).count() != 0:
+                raise exceptions.ValidationError(
+                    {"error": "Запрошенный рецепт уже есть в списке."}
+                )
+            data_obj.users_shopping.add(recipe)
+            obj = data_obj.users_shopping.get(id=pk)
+            data = get_data_recipeusers(request, obj)
+            return Response(data, status=status.HTTP_201_CREATED)
 
     @action(methods=['post', 'delete'], detail=True)
     def favorite(self, request, pk):
-        print(request.method)
-        print(self, request, pk)
+        data_obj, recipe = validators.recipe_users_validator(request, pk)
+        if request.method == 'DELETE':
+            if data_obj.users_favorite.filter(id=pk).count() == 0:
+                raise exceptions.ValidationError(
+                    {"error": "Запрошенного рецепта нет в списке."}
+                )
+            data_obj.users_favorite.remove(recipe)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        if request.method == 'POST':
+            if data_obj.users_favorite.filter(id=pk).count() != 0:
+                raise exceptions.ValidationError(
+                    {"error": "Запрошенный рецепт уже есть в списке."}
+                )
+            data_obj.users_favorite.add(recipe)
+            obj = data_obj.users_favorite.get(id=pk)
+            data = get_data_recipeusers(request, obj)
+            return Response(data, status=status.HTTP_201_CREATED)
+
+
+def get_data_recipeusers(request, obj):
+    obj_id, obj_name = obj.id, obj.name
+    obj_cooking_time = obj.cooking_time
+    obj_image_1 = request.META['wsgi.url_scheme'] + '://'
+    obj_image_2 = request.META['HTTP_HOST'] + obj.image.url
+    obj_image = obj_image_1 + obj_image_2
+    data = {
+        'id': obj_id,
+        'name': obj_name,
+        'image': obj_image,
+        'cooking_time': obj_cooking_time
+    }
+    return data
 
 
 @api_view()
