@@ -2,7 +2,8 @@ from rest_framework import exceptions, viewsets, permissions, status
 from rest_framework.filters import SearchFilter
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
-from recipes.models import Ingredient, Product, Recipe, Tag
+from django.http import HttpResponse
+from recipes.models import Ingredient, Product, Recipe, RecipeUsers, Tag
 from . import serializers, validators
 from . import exceptions as exc
 
@@ -182,5 +183,29 @@ def get_data_recipeusers(request, obj):
 
 @api_view()
 def download_shopping_cart(request):
-    print(request)
-    return Response({"message": "Hello, world!"})
+    if RecipeUsers.objects.filter(user=request.user).count() == 0:
+        RecipeUsers.objects.create(user=request.user)
+    data_obj = RecipeUsers.objects.get(user=request.user)
+    shopping_list_recipes = data_obj.users_shopping.all()
+    shopping_list = {}
+    for recipe in shopping_list_recipes:
+        for ingredient in recipe.ingredients.all():
+            if ingredient.product.name not in shopping_list:
+                shopping_list[ingredient.product.name] = [
+                    ingredient.amount,
+                    ingredient.product.measurement_unit
+                ]
+            else:
+                shopping_list[ingredient.product.name][0] += ingredient.amount
+    file_name = 'media/' + str(request.user) + '_shopping_cart.txt'
+    with open(file_name, 'w+') as file_list:
+        for string_list in shopping_list:
+            product = str(string_list)
+            amount = str(shopping_list[string_list][0])
+            unit = str(shopping_list[string_list][1])
+            string = str(product + ' ' + amount + ' ' + unit + '\n')
+            file_list.write(string)
+    response = HttpResponse(content_type='text/plain')
+    header_resp = 'attachment; filename= "{}"'.format(file_name)
+    response['Content-Disposition'] = header_resp
+    return response
