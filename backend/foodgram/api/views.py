@@ -2,9 +2,10 @@ from rest_framework import exceptions, viewsets, permissions, status
 from rest_framework.filters import SearchFilter
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
 from recipes.models import Ingredient, Product, Recipe, RecipeUsers, Tag
-from . import serializers, validators
+from . import serializers, validators, filters
 from . import exceptions as exc
 
 
@@ -39,6 +40,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = serializers.RecipeSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = filters.RecipeFilter
 
     def create(self, request, *args, **kwargs):
         data_valid = self.request.data

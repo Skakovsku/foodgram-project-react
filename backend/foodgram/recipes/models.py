@@ -8,10 +8,16 @@ class Tag(models.Model):
 
     name = models.CharField(max_length=100, verbose_name='tags_name')
     color = RGBColorField(max_length=8, verbose_name='tags_color')
-    slug = models.SlugField(max_length=15, verbose_name='tags_slug')
+    slug = models.SlugField(
+        max_length=15,
+        verbose_name='tags_slug'
+    )
 
     class Meta:
         ordering = ('-id',)
+
+    def __str__(self):
+        return self.slug
 
 
 class Product(models.Model):
@@ -20,6 +26,9 @@ class Product(models.Model):
 
     class Meta:
         ordering = ('-id',)
+
+    def __str__(self):
+        return self.name
 
 
 class Ingredient(models.Model):
@@ -63,6 +72,9 @@ class Recipe(models.Model):
     class Meta:
         ordering = ('-id',)
 
+    def __str__(self):
+        return self.name
+
 
 class RecipeUsers(models.Model):
     user = models.OneToOneField(
@@ -84,3 +96,6 @@ class RecipeUsers(models.Model):
 
     class Meta:
         ordering = ('-id',)
+
+    def __str__(self):
+        return self.user.username
