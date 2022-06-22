@@ -46,11 +46,11 @@ class RecipeSerializer(ModelSerializer):
                   'cooking_time',)
 
     def get_is_favorited(self, obj):
-        print(obj.favorite.all())
-
-    def get_is_in_shopping_cart(self, obj):
-        print(self.context['request'].user.is_authenticated)
         if not self.context['request'].user.is_authenticated:
             return False
-        print(obj.shopping.filter(user=self.context['request'].user)[0].user)
+        return True
+
+    def get_is_in_shopping_cart(self, obj):
+        if not self.context['request'].user.is_authenticated:
+            return False
         return True
