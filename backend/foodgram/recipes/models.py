@@ -1,17 +1,15 @@
 from colorful.fields import RGBColorField
-from django.db import models
 from django.core.validators import MinValueValidator
+from django.db import models
+
 from users.models import User
 
 
 class Tag(models.Model):
 
-    name = models.CharField(max_length=100, verbose_name='tags_name')
-    color = RGBColorField(max_length=8, verbose_name='tags_color')
-    slug = models.SlugField(
-        max_length=15,
-        verbose_name='tags_slug'
-    )
+    name = models.CharField('tags_name', max_length=100)
+    color = RGBColorField('tags_color', max_length=8)
+    slug = models.SlugField('tags_slug')
 
     class Meta:
         ordering = ('-id',)
@@ -21,8 +19,8 @@ class Tag(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=100, verbose_name='ingredients_name')
-    measurement_unit = models.CharField(max_length=15, verbose_name='unit')
+    name = models.CharField('ingredients_name', max_length=100)
+    measurement_unit = models.CharField('unit', max_length=15)
 
     class Meta:
         ordering = ('-id',)
@@ -52,10 +50,7 @@ class Recipe(models.Model):
         related_name='recipes',
         verbose_name='author',
     )
-    name = models.CharField(
-        max_length=100,
-        verbose_name='recipe_name',
-    )
+    name = models.CharField('recipe_name', max_length=100)
     text = models.TextField(verbose_name='description')
     cooking_time = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(limit_value=1)],

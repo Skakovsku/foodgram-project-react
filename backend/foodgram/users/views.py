@@ -1,10 +1,12 @@
 from djoser.views import UserViewSet
 from rest_framework import exceptions, status
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from users.models import User, Subscription
-from .serializers import (PostDelSubscribeSerialiser,
-                          ListSubscriptionsSerializer)
+from rest_framework.viewsets import ModelViewSet
+
+from users.models import Subscription, User
+
+from .serializers import (ListSubscriptionsSerializer,
+                          PostDelSubscribeSerialiser)
 
 
 class ListUserViewSet(UserViewSet):

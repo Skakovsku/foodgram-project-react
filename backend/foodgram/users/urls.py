@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import (ListUserViewSet, ListSubscriptionsViewSet,
+
+from .views import (ListSubscriptionsViewSet, ListUserViewSet,
                     PostDelSubscribeViewSet)
 
 app_name = 'users'

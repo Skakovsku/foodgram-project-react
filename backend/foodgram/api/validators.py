@@ -1,5 +1,7 @@
 from rest_framework import exceptions
-from recipes.models import Product, Tag, Recipe, RecipeUsers
+
+from recipes.models import Product, Recipe, RecipeUsers, Tag
+
 from . import exceptions as exc
 
 

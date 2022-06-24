@@ -1,7 +1,8 @@
 from django.utils.translation import gettext_lazy as _
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
-from .models import User, Subscription
+
+from .models import Subscription, User
 
 
 class EmailAuthTokenSerializer(serializers.Serializer):

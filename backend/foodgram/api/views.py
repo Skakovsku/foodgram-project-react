@@ -1,12 +1,15 @@
-from rest_framework import exceptions, viewsets, permissions, status
-from rest_framework.filters import SearchFilter
-from rest_framework.decorators import action, api_view
-from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from django.http import HttpResponse
+from rest_framework import exceptions, permissions, status, viewsets
+from rest_framework.decorators import action, api_view
+from rest_framework.filters import SearchFilter
+from rest_framework.response import Response
+
 from recipes.models import Ingredient, Product, Recipe, RecipeUsers, Tag
-from . import serializers, validators, filters
+
 from . import exceptions as exc
+from . import filters
+from . import get_list_shopping_cart as list_shopping
+from . import serializers, validators
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -200,15 +203,5 @@ def download_shopping_cart(request):
                 ]
             else:
                 shopping_list[ingredient.product.name][0] += ingredient.amount
-    file_name = 'media/' + str(request.user) + '_shopping_cart.txt'
-    with open(file_name, 'w+') as file_list:
-        for string_list in shopping_list:
-            product = str(string_list)
-            amount = str(shopping_list[string_list][0])
-            unit = str(shopping_list[string_list][1])
-            string = str(product + ' ' + amount + ' ' + unit + '\n')
-            file_list.write(string)
-    response = HttpResponse(content_type='text/plain')
-    header_resp = 'attachment; filename= "{}"'.format(file_name)
-    response['Content-Disposition'] = header_resp
+    response = list_shopping.get_list_shopping_cart(request, shopping_list)
     return response

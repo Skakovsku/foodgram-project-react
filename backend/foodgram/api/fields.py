@@ -1,7 +1,8 @@
-import base64
-import six
-import uuid
+import base64 as image_decode
 import imghdr
+import uuid
+
+import six
 from django.core.files.base import ContentFile
 from rest_framework.serializers import ImageField
 
@@ -13,7 +14,7 @@ class Base64ImageField(ImageField):
             if 'data:' in data and ';base64,' in data:
                 header, data = data.split(';base64,')
             try:
-                decoded_file = base64.b64decode(data)
+                decoded_file = image_decode.b64decode(data)
             except TypeError:
                 self.fail('invalid_image')
             file_name = str(uuid.uuid4())[:12]

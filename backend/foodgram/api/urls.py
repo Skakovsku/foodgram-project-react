@@ -1,15 +1,17 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+
 from users.tokens import EmailObtainAuthToken, token_logout
+
 from .views import (ProductViewSet, RecipeViewSet, TagViewSet,
                     download_shopping_cart)
 
 app_name = 'api'
 
-router = DefaultRouter()
-router.register('tags', TagViewSet)
-router.register('ingredients', ProductViewSet)
-router.register('recipes', RecipeViewSet)
+router_v1 = DefaultRouter()
+router_v1.register('tags', TagViewSet, basename='tags')
+router_v1.register('ingredients', ProductViewSet, basename='ingredients')
+router_v1.register('recipes', RecipeViewSet, basename='recipes')
 
 urlpatterns = [
     path('auth/token/login/', EmailObtainAuthToken.as_view()),
@@ -20,6 +22,6 @@ urlpatterns = [
         name='download_shopping_cart'
     ),
     path('users/', include('users.urls')),
-    path('', include(router.urls)),
+    path('', include(router_v1.urls)),
     path('', include('djoser.urls')),
 ]

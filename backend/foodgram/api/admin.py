@@ -1,6 +1,7 @@
 from django.contrib import admin
-from users.models import User, Subscription
+
 from recipes.models import Ingredient, Product, Recipe, Tag
+from users.models import Subscription, User
 
 
 @admin.register(User)
@@ -25,6 +26,5 @@ class RecipeAdmin(admin.ModelAdmin):
     list_filter = ('author', 'name', 'tags',)
 
     def favorite_count(self, obj):
-        print(obj)
         favorite_count = obj.favorite.all().count()
         return f'Добавлено в ИЗБРАННОЕ {favorite_count} раз'

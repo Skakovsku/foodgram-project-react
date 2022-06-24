@@ -1,11 +1,11 @@
 from rest_framework import parsers, renderers, status
 from rest_framework.authtoken.models import Token
 from rest_framework.compat import coreapi, coreschema
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.schemas import ManualSchema
 from rest_framework.schemas import coreapi as coreapi_schema
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
 
 from .serializers import EmailAuthTokenSerializer
 
@@ -71,5 +71,4 @@ def token_logout(request):
         user_token = Token.objects.get(user=request.user)
         user_token.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    else:
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+    return Response(status=status.HTTP_401_UNAUTHORIZED)
