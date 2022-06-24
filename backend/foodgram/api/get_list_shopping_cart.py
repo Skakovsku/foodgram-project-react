@@ -1,3 +1,4 @@
+# PDF, если можно, попробую сделать в деплое))
 from django.http import HttpResponse
 
 

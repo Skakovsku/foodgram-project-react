@@ -9,13 +9,13 @@ from .fields import Base64ImageField
 class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields = '__all__'  # все поля задействованы
 
 
 class ProductSerializer(ModelSerializer):
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = '__all__'  # все поля задействованы
 
 
 class IngredientSerializer(ModelSerializer):
