@@ -10,8 +10,4 @@ COPY ./ /app
 
 WORKDIR /app/foodgram
 
-#RUN python manage.py makemigrations
-
-#RUN python manage.py migrate
-
 CMD ["gunicorn", "foodgram.wsgi:application", "--bind", "0:8000" ]
