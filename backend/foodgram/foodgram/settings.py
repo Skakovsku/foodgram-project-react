@@ -1,13 +1,11 @@
 import os
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = '8nxh-&#ma81^7t+jn0s15%k59t4+g&na$vb$yw=y3+0p+i@&$@'
 
 DEBUG = True
 
-#ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '51.250.106.196', 'backend']
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
@@ -74,11 +72,11 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'db_pg',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT')
     }
 }
 
