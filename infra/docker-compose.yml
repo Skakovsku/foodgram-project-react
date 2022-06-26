@@ -1,11 +1,16 @@
 version: '3.3'
 services:
-  db:
+  db_pg:
+    restart: always
     image: postgres:13.0-alpine
     volumes:
       - /var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
     env_file:
       - ../.env
+    networks:
+      some_network:
 
   frontend:
     build:
@@ -14,7 +19,7 @@ services:
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
-      - db
+      - db_pg
 
   backend:
     build:
@@ -25,8 +30,14 @@ services:
       - ../backend/:/app/result_build/
     depends_on:
       - frontend
+      - db_pg
+    links:
+        - db_pg:db_pg
     env_file:
       - ../.env
+    #command: bash -c "python manage.py migrate"
+    networks:
+      some_network:
 
   nginx:
     image: nginx:1.19.3
@@ -39,3 +50,8 @@ services:
     depends_on:
       # Контейнер nginx должен быть запущен после контейнера web
       - backend
+    networks:
+      some_network:
+
+networks:
+  some_network:
