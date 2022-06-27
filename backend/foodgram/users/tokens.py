@@ -6,13 +6,14 @@ from rest_framework.response import Response
 from rest_framework.schemas import ManualSchema
 from rest_framework.schemas import coreapi as coreapi_schema
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 
 from .serializers import EmailAuthTokenSerializer
 
 
 class EmailObtainAuthToken(APIView):
     throttle_classes = ()
-    permission_classes = ()
+    permission_classes = (AllowAny,)
     parser_classes = (
         parsers.FormParser,
         parsers.MultiPartParser,

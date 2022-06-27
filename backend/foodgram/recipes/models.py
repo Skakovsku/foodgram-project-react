@@ -41,6 +41,9 @@ class Ingredient(models.Model):
     class Meta:
         ordering = ('-id',)
 
+    def __str__(self):
+        return f'{self.product}, {self.amount}{self.product.measurement_unit}'
+
 
 class Recipe(models.Model):
 
