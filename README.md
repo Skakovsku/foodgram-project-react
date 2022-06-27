@@ -50,10 +50,6 @@ sudo docker-compose exec backend python manage.py collectstatic --no-input
 
 ### База данных
 
-Для автоматического заполнения базы данных ингредиентами из файла ingredients выполните:
-```
-sudo docker-compose exec backend python manage.py loaddata ingredients.json
-```
 Для ручного заполнения базы данных перейдите в браузере по адресу:
 ```
 http://localhost/admin/
