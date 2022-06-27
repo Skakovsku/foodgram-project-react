@@ -59,3 +59,11 @@ http://localhost/admin/
 ### Автор:
 
 Евгений Скаковский, кагорта 26
+
+Сервер: product_server
+IP: 62.84.123.176
+
+### Админ:
+
+username: admin
+password: Test1976
