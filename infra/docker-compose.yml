@@ -5,8 +5,8 @@ services:
     image: postgres:13.0-alpine
     volumes:
       - /var/lib/postgresql/data/
-    ports:
-      - "5432:5432"
+    #ports:
+    #  - "5432:5432"
     env_file:
       - ../.env
     networks:
@@ -37,7 +37,6 @@ services:
         - db_pg:db_pg
     env_file:
       - ../.env
-    #command: bash -c "python manage.py migrate"
     networks:
       some_network:
 
