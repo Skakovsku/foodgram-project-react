@@ -23,7 +23,7 @@ def ingredient_validator(data):
             raise exceptions.ValidationError(
                 {'ingredients': "Некорректное значение поля."}
             )
-        if 'amount' not in ingredient or type(ingredient['amount']) != int:
+        if 'amount' not in ingredient:
             raise exceptions.ValidationError(
                 {'ingredients': "Некорректное значение поля."}
                 )
