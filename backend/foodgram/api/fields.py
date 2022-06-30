@@ -17,7 +17,7 @@ class Base64ImageField(ImageField):
                 decoded_file = image_decode.b64decode(data)
             except TypeError:
                 self.fail('invalid_image')
-            file_name = str(uuid.uuid4())[:12]
+            file_name = str(uuid.uuid4())
             file_extension = self.get_file_extension(file_name, decoded_file)
             complete_file_name = "%s.%s" % (file_name, file_extension, )
             data = ContentFile(decoded_file, name=complete_file_name)
@@ -25,5 +25,9 @@ class Base64ImageField(ImageField):
 
     def get_file_extension(self, file_name, decoded_file):
         extension = imghdr.what(file_name, decoded_file)
-        extension = "png"
         return extension
+
+    def to_representation(self, value):
+        url = value.url
+        print(url)
+        return url
