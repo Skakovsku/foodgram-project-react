@@ -61,7 +61,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 amount=ingredient['amount']
             )
             if ingredient_request.count() != 0:
-                current_ingredient = ingredient_request['0']
+                current_ingredient = ingredient_request[0]
             else:
                 current_ingredient = Ingredient.objects.create(
                     product=product,
