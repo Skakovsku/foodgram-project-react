@@ -1,6 +1,6 @@
 # FOODGRAM
 
-[51.250.102.61](https://github.com/Skakovsku/foodgram-project-react/actions/workflows/main.yml/badge.svg?event=push)
+[51.250.107.5](https://github.com/Skakovsku/foodgram-project-react/actions/workflows/main.yml/badge.svg?event=push)
 
 ### Краткое описание проекта
 
@@ -61,7 +61,7 @@ http://localhost/admin/
 Евгений Скаковский, кагорта 26
 
 Сервер: product_server
-IP: 51.250.102.61
+IP: 51.250.107.5
 
 ### Админ:
 
