@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
-from recipes.models import Ingredient, Product, Recipe, Tag
+from recipes.models import Ingredient, Product, Recipe, RecipeUsers, Tag
 from users.serializers import CurrentUserSerializer
 
 from .fields import Base64ImageField
@@ -9,13 +9,13 @@ from .fields import Base64ImageField
 class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
-        fields = '__all__'  # все поля задействованы
+        fields = '__all__'
 
 
 class ProductSerializer(ModelSerializer):
     class Meta:
         model = Product
-        fields = '__all__'  # все поля задействованы
+        fields = '__all__'
 
 
 class IngredientSerializer(ModelSerializer):
@@ -50,9 +50,23 @@ class RecipeSerializer(ModelSerializer):
     def get_is_favorited(self, obj):
         if not self.context['request'].user.is_authenticated:
             return False
-        return True
+        favorit_list = RecipeUsers.objects.filter(
+            user=self.context['request'].user
+        )
+        if favorit_list.count() == 0:
+            return False
+        if obj in favorit_list[0].users_favorite.all():
+            return True
+        return False
 
     def get_is_in_shopping_cart(self, obj):
         if not self.context['request'].user.is_authenticated:
             return False
-        return True
+        shopping_list = RecipeUsers.objects.filter(
+            user=self.context['request'].user
+        )
+        if shopping_list.count() == 0:
+            return False
+        if obj in shopping_list[0].users_shopping.all():
+            return True
+        return False

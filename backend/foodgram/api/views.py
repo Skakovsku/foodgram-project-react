@@ -30,8 +30,8 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.ProductSerializer
     pagination_class = None
     permission_classes = (permissions.AllowAny,)
-    filter_backends = (SearchFilter,)  # Если db='Postgrees',
-    search_fields = ('^name',)         # то нечувствителен к регистру
+    filter_backends = (SearchFilter,)
+    search_fields = ('^name',)
 
 
 class IngredientViewSet(viewsets.ModelViewSet):

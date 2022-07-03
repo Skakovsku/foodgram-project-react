@@ -32,7 +32,6 @@ class RecipeFilter(FilterSet):
         return queryset
 
     def get_tags(self, queryset, name, value):
-        print(value)
         tags_obj = Tag.objects.filter(slug=value)
         if tags_obj.count() == 0:
             return queryset
