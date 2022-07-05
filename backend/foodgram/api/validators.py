@@ -15,7 +15,14 @@ def ingredient_validator(data):
         raise exceptions.ValidationError(
             {'ingredients': "Необходимо заполнить значения поля."}
         )
+    list_product = []
     for ingredient in data['ingredients']:
+        if 'id' in ingredient:
+            if ingredient['id'] in list_product:
+                raise exceptions.ValidationError(
+                    {'ingredients': "Повтор ингредиентов нецелесообразен."}
+                )
+            list_product.append(ingredient['id'])
         prod_list = Product.objects.filter(id=ingredient['id'])
         if prod_list.count() == 0:
             raise exc.NotFoundCastom
@@ -27,6 +34,10 @@ def ingredient_validator(data):
             raise exceptions.ValidationError(
                 {'ingredients': "Некорректное значение поля."}
                 )
+        if int(ingredient['amount']) < 1:
+            raise exceptions.ValidationError(
+                {'amount': "Требуется положительное число."}
+            )
 
 
 def tags_validator(data):
