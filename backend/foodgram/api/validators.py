@@ -34,9 +34,10 @@ def ingredient_validator(data):
             raise exceptions.ValidationError(
                 {'ingredients': "Некорректное значение поля."}
                 )
+        msg_amount = "Количество ингредиента: Требуется положительное число."
         if int(ingredient['amount']) < 1:
             raise exceptions.ValidationError(
-                {'amount': "Требуется положительное число."}
+                {'amount': msg_amount}
             )
 
 

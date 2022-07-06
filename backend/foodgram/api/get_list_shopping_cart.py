@@ -19,7 +19,7 @@ def get_list_shopping_cart(request, shopping_list):
         product = str(string_list)
         amount = str(shopping_list[string_list][0])
         unit = str(shopping_list[string_list][1])
-        string = str('- ' + product + ' ' + amount + ' ' + unit)
+        string = '- ' + product + ' ' + amount + ' ' + unit
         pdf.drawString(x, y, text=string)
         y -= 1 * cm
         if y == (1 * cm):
